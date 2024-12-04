@@ -1,0 +1,21 @@
+---
+title: "About our Team"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+Welcome to our project! Get to know the passionate team working tirelessly behind the scenes to bring this project to life. 
+
+### Huizhong Peng
+### Minghui Wang
+### Xiwen Wu
+### Yizhen Jia
+### Yuchen Gu
+
+
+# Get in Touch
+
+If you’d like more information or wish to reach out to any of our team members, feel free to contact us.
+
+We hope you enjoy exploring our site and find the resources valuable!

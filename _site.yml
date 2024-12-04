@@ -1,0 +1,23 @@
+name: "Yay internet!"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "Calorie Expenditure"
+      href: rq_calorie_expenditure.html
+    - text: "Workout Duration"
+      href: rq_workout_duration.html
+    - text: "Subscription Preferences"
+      href: rq_subscription_insight.html
+    - text: "Report"
+      href: Report.html
+    - text: "About us"
+      href: About-us.html
+    - icon: fa-github fa-lg
+      href: https://github.com/Gracewmh/gym_goer_trends
+    - icon: fa-envelope fa-lg
+      href: mailto:<mw3743@cumc.columbia.edu>,<hp2661@cumc.columbia.edu>,<xw2972@cumc.columbia.edu>,<yg2964@cumc.columbia.edu>,<yj2802@cumc.columbia.edu>
+
+output:
+  html_document:
+    theme: cosmo

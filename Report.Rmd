@@ -1,0 +1,51 @@
+---
+title: "Project Report"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+The written report produced by your team is central to this project. This will detail:
+
+- How you completed your project,
+- Data collection,
+- Data cleaning,
+- Exploratory analyses,
+- Alternative strategies,
+- Descriptions of approaches,
+- Discussion of results.
+
+We anticipate that your project will change somewhat over time; these changes and the reasons for them should be documented! You will write one report document per group, and be sure to include all group member names in the document.
+
+Your report should include the following topics. Depending on your project type, the amount of discussion you devote to each of them will vary:
+
+#### Motivation
+Provide an overview of the project goals and motivation.
+
+#### Related Work
+Anything that inspired you, such as a paper, a website, or something we discussed in class.
+
+#### Initial Questions
+- What questions are you trying to answer?  
+- How did these questions evolve over the course of the project?  
+- What new questions did you consider in the course of your analysis?
+
+#### Data
+Discuss the following:
+- Source of the data
+- Scraping method
+- Cleaning process
+
+#### Exploratory Analysis
+- Visualizations, summaries, and exploratory statistical analyses.  
+- Justify the steps you took and show any major changes to your ideas.
+
+#### Additional Analysis
+If you undertake formal statistical analyses, describe these in detail.
+
+#### Discussion
+- What were your findings?  
+- Are they what you expected?  
+- What insights into the data can you make?
+
