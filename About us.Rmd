@@ -5,17 +5,56 @@ output:
     toc: true
     toc_float: true
 ---
+
+```{css, echo = FALSE}
+img.portrait{
+  width:60%;
+  float:bottom;
+  float:right;
+}
+```
+
 Welcome to our project! Get to know the passionate team working tirelessly behind the scenes to bring this project to life. 
 
-### Huizhong Peng
-### Minghui Wang
-### Xiwen Wu
-### Yizhen Jia
-### Yuchen Gu
+```{=html}
+<table style="width:90%">
+
+  <tr>
+    <td><h3>Minghui Wang</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><a href="https://gracewmh.github.io/">Minghui Wang</a> is a second year student in Epidemiology mph program. She loves outdoor activities like hiking, diving, and tennis. While the gym feels monotonous to her, she still incorporates simple workouts to build strength for her outdoor pursuits. </td>
+    <td><img src="images/tennis.jpeg" class="portrait"></td>
+  </tr>
+  
+  <tr>
+    <td><h3>Yizhen Jia</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Yizhen Jia is a second-year MPH student specializing in epidemiology. Yizhen has a regular fitness routine, hitting the gym two to three times a week exclusively for strength training—cardio is definitely off the table!</td>
+    <td><img src="images/weight.jpeg" class="portrait"></td>
+  </tr>
+
+  <tr>
+    <td><h3>Yuchen Gu</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Yuchen Gu is a second-year student in the Epidemiology MPH program. She enjoys alpine skiing, road tripping, playing video games, and has recently discovered a passion for scuba diving.</td>
+    <td><img src="images/ski.png" class="portrait"></td>
+  </tr>
+</table>
+```
+
+<br>
 
 
-# Get in Touch
+### Get in Touch
 
 If you’d like more information or wish to reach out to any of our team members, feel free to contact us.
 
 We hope you enjoy exploring our site and find the resources valuable!
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
