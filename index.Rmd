@@ -4,19 +4,33 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: cerulean
 ---
 
-# Webpage 
+
+(括号里的在正文里会被删除
+
+# Requirements
+
+## Webpage
 
 - This should give an overview of the **project scope, data, approaches, visualizations, and other results**, in a way that it is accessible to a broad audience. 
 - Include **the full report as a page** in the website, so that readers can find a detailed explanation of your work.
 
-# Screencast
+## Screencast
 - You will also create a **two-minute narrated screencast** illustrating your project (screencasts are videos of your computer screen with spoken audio explaining what is shown on the screen – see the [RStudio webinar page](https://www.rstudio.com/resources/webinars/) for some examples). 
 - You may use slides, demonstrations, or any other content that is relevant to your project. 
 - **Publish your screencast on YouTube, Vimeo, or another online platform, and embed the screencast in your website.** The two-minute limit will be strictly enforced.
 
-# Tips
+## Tips
 - We suggest you **emphasize motivation, questions, and results over methods**
 - after all, interested folks can view your complete project report on the same page.
+
+)
+
+# Main Research Questions:
+
+- What factors influence a user's monthly calorie expenditure?
+- What factors determine the workout duration of members?
+- What factors drive members' choice of subscription plans?
+
+# Project Overview (Screencast)
