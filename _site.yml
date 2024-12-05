@@ -15,6 +15,8 @@ navbar:
           href: rq_workout_duration.html
         - text: "Subscription Preferences"
           href: rq_subscription_insight.html
+    - text: "Calorie Predictor"
+      href: https://xw2972.shinyapps.io/my_shiny_app/
   right:
     - text: "Report"
       href: Report.html
