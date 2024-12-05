@@ -20,6 +20,36 @@ Welcome to our project! Get to know the passionate team working tirelessly behin
 <table style="width:90%">
 
   <tr>
+    <td><h3>Yuchen Gu</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><a href="https://y-ddgx.github.io/">Yuchen Gu</a> is a second-year student in the Epidemiology MPH program. She enjoys alpine skiing, road tripping, playing video games, and has recently discovered a passion for scuba diving.</td>
+    <td><img src="images/ski.png" class="portrait"></td>
+  </tr>
+ 
+  
+  <tr>
+    <td><h3>Yizhen Jia</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><a href="https://yizhen-jia.github.io/">Yizhen Jia</a> is a second-year MPH student specializing in epidemiology. Yizhen has a regular fitness routine, hitting the gym two to three times a week exclusively for strength training—cardio is definitely off the table!</td>
+    <td><img src="images/weight.jpeg" class="portrait"></td>
+  </tr>
+
+
+  <tr>
+    <td><h3>Huizhong Peng</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Huizhong Peng is a second-year student in the Biostatistics MPH program. She is a squash enthusiast and a a devoted fan of volleyball matches, though her enthusiasm for volleyball turned sour after a wrist-spraining mishap during practice!</td>
+    <td><img src="images/volb.jpg" class="portrait"></td>
+  </tr>
+  
+
+  <tr>
     <td><h3>Minghui Wang</h3></td>
     <td></td>
   </tr>
@@ -28,23 +58,16 @@ Welcome to our project! Get to know the passionate team working tirelessly behin
     <td><img src="images/tennis.jpeg" class="portrait"></td>
   </tr>
   
-  <tr>
-    <td><h3>Yizhen Jia</h3></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Yizhen Jia is a second-year MPH student specializing in epidemiology. Yizhen has a regular fitness routine, hitting the gym two to three times a week exclusively for strength training—cardio is definitely off the table!</td>
-    <td><img src="images/weight.jpeg" class="portrait"></td>
-  </tr>
 
   <tr>
-    <td><h3>Yuchen Gu</h3></td>
+    <td><h3>Xiwen Wu</h3></td>
     <td></td>
   </tr>
   <tr>
-    <td>Yuchen Gu is a second-year student in the Epidemiology MPH program. She enjoys alpine skiing, road tripping, playing video games, and has recently discovered a passion for scuba diving.</td>
-    <td><img src="images/ski.png" class="portrait"></td>
+    <td><a href="https://gatorxiwen01.github.io/">Xiwen Wu</a> is a second-year MPH student majoring in Biostatistics. She is passionate about exploring the interaction between environmental determinants and human health. Xiwen enjoys traveling and staying active, with a current focus on weightlifting as part of her fitness routine.</td>
+    <td><img src="images/weightlifting.jpeg" class="portrait"></td>
   </tr>
+  
 </table>
 ```
 
