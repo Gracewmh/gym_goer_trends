@@ -258,19 +258,19 @@ model <- lm(workout_duration ~
             crossfit,
             data = final)
 
-summary(model)
-model_coef <- summary(model)$coefficients
+model_coef <- coef(summary(model))
 results_df <- data.frame(
-  Term = rownames(model_coef),
-  Estimate = model_coef[,1],
-  `Std. Error` = model_coef[,2],
-  `t value` = model_coef[,3],
-  `p-value` = model_coef[,4]
+    Estimate = model_coef[,1],
+    Std.Error = model_coef[,2],
+    t.value = model_coef[,3],
+    p.value = model_coef[,4],
+    row.names = rownames(model_coef)
 )
 
 kable(results_df,
       digits = 3, 
-      caption = "Linear Regression Results")|>
+      caption = "Linear Regression Results",
+      row.names = TRUE) |>
     kable_styling(
     full_width = FALSE,
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
