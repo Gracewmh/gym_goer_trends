@@ -11,7 +11,7 @@
 
 
 
-<title>Gym Goer Trends</title>
+<title>index.knit</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,9 +29,6 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -224,69 +221,6 @@ $(document).ready(function () {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -294,16 +228,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -362,71 +286,114 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Gym Goer Trends</h1>
 
 </div>
 
 
-<p>(括号里的在正文里会被删除</p>
-<div id="requirements" class="section level1">
-<h1>Requirements</h1>
-<div id="webpage" class="section level2">
-<h2>Webpage</h2>
+<div class="title-box">
+<h1>
+<strong>Gym Secrets: Trends You Never Knew About!</strong>
+</h1>
+</div>
+<div class="textbox">
+<p>
+Hi, everyone! Welcome to our project, where we explore gym check-in
+patterns and user demographics to uncover key trends in fitness
+behavior. By offering insights into peak workout times, demographic
+trends, and popular locations, we aim to help fitness enthusiasts
+optimize their schedules and support newcomers in starting their fitness
+journeys with confidence, inspired by the habits of regular gym-goers.
+For gyms, this project provides valuable data to enhance services,
+streamline staffing, and create targeted marketing strategies to better
+meet client needs. Together, we strive to create a more informed,
+inclusive, and accessible fitness environment for all.
+</p>
+<p>
+<strong>Main Research Questions:</strong>
+</p>
 <ul>
-<li>This should give an overview of the <strong>project scope, data,
-approaches, visualizations, and other results</strong>, in a way that it
-is accessible to a broad audience.</li>
-<li>Include <strong>the full report as a page</strong> in the website,
-so that readers can find a detailed explanation of your work.</li>
+<li>
+What factors predict a user’s monthly calories burnned?
+</li>
+<li>
+What factors affect members’ workout time?
+</li>
+<li>
+What factors affect members’ subscription plans?
+</li>
 </ul>
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/vNYQC4V8GG4" frameborder="0" border="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 </div>
-<div id="screencast" class="section level2">
-<h2>Screencast</h2>
-<ul>
-<li>You will also create a <strong>two-minute narrated
-screencast</strong> illustrating your project (screencasts are videos of
-your computer screen with spoken audio explaining what is shown on the
-screen – see the <a
-href="https://www.rstudio.com/resources/webinars/">RStudio webinar
-page</a> for some examples).</li>
-<li>You may use slides, demonstrations, or any other content that is
-relevant to your project.</li>
-<li><strong>Publish your screencast on YouTube, Vimeo, or another online
-platform, and embed the screencast in your website.</strong> The
-two-minute limit will be strictly enforced.</li>
-</ul>
-</div>
-<div id="tips" class="section level2">
-<h2>Tips</h2>
-<ul>
-<li>We suggest you <strong>emphasize motivation, questions, and results
-over methods</strong></li>
-<li>after all, interested folks can view your complete project report on
-the same page.</li>
-</ul>
-<p>)</p>
-</div>
-</div>
-<div id="main-research-questions" class="section level1">
-<h1>Main Research Questions:</h1>
-<ul>
-<li>What factors influence a user’s monthly calorie expenditure?</li>
-<li>What factors determine the workout duration of members?</li>
-<li>What factors drive members’ choice of subscription plans?</li>
-</ul>
-</div>
-<div id="project-overview-screencast" class="section level1">
-<h1>Project Overview (Screencast)</h1>
-<p>Click on the video below to explore the capabilities of this site and
-enjoy a summary of our key highlights.</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/vNYQC4V8GG4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
-</iframe>
-</div>
+<style type="text/css">
+body {
+  background-image: url('images/gym.jpeg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: 'Open Sans', Arial, sans-serif; 
+  color: #333; 
+  margin: 0;
+  padding: 0;
+}
+
+.title-box {
+  background-color: rgba(255, 255, 255, 0.8); 
+  padding: 20px; 
+  border-radius: 10px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 800px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.textbox {
+  background-color: rgba(255, 255, 255, 0.9); 
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 800px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  line-height: 1.6; 
+}
+
+.textbox iframe {
+  display: block;
+  margin: 20px auto;
+  border-radius: 5px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: #007BFF; /* Blue for hover effect */
+  transition: color 0.3s ease;
+}
+
+button, .btn {
+  background-color: #007BFF; /* Blue button */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, .btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+@media (max-width: 768px) {
+  .title-box, .textbox {
+    margin: 10px;
+    padding: 15px;
+    font-size: 90%; /* Adjust font size for smaller screens */
+  }
+}
+</style>
 
 
 
-</div>
-</div>
 
 </div>
 
@@ -459,35 +426,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

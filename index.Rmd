@@ -1,39 +1,85 @@
 ---
-title: "Gym Goer Trends"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
 ---
+<div class="title-box">
+  <h1><strong>Gym Secrets: Trends You Never Knew About!</strong></h1>
+</div>
 
+<div class="textbox">
+  <p>Hi, everyone! Welcome to our project, where we explore gym check-in patterns and user demographics to uncover key trends in fitness behavior. By offering insights into peak workout times, demographic trends, and popular locations, we aim to help fitness enthusiasts optimize their schedules and support newcomers in starting their fitness journeys with confidence, inspired by the habits of regular gym-goers. For gyms, this project provides valuable data to enhance services, streamline staffing, and create targeted marketing strategies to better meet client needs. Together, we strive to create a more informed, inclusive, and accessible fitness environment for all.</p>
 
-(括号里的在正文里会被删除
+  <p><strong>Main Research Questions:</strong></p>
+  <ul>
+    <li>What factors predict a user’s monthly calories burnned?</li>
+    <li>What factors affect members’ workout time?</li>
+    <li>What factors affect members’ subscription plans?</li>
+  </ul>
 
-# Requirements
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/vNYQC4V8GG4" frameborder="0" border="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
-## Webpage
+```{css, echo=FALSE}
+body {
+  background-image: url('images/gym.jpeg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: 'Open Sans', Arial, sans-serif; 
+  color: #333; 
+  margin: 0;
+  padding: 0;
+}
 
-- This should give an overview of the **project scope, data, approaches, visualizations, and other results**, in a way that it is accessible to a broad audience. 
-- Include **the full report as a page** in the website, so that readers can find a detailed explanation of your work.
+.title-box {
+  background-color: rgba(255, 255, 255, 0.8); 
+  padding: 20px; 
+  border-radius: 10px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 800px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
 
-## Screencast
-- You will also create a **two-minute narrated screencast** illustrating your project (screencasts are videos of your computer screen with spoken audio explaining what is shown on the screen – see the [RStudio webinar page](https://www.rstudio.com/resources/webinars/) for some examples). 
-- You may use slides, demonstrations, or any other content that is relevant to your project. 
-- **Publish your screencast on YouTube, Vimeo, or another online platform, and embed the screencast in your website.** The two-minute limit will be strictly enforced.
+.textbox {
+  background-color: rgba(255, 255, 255, 0.9); 
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 800px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  line-height: 1.6; 
+}
 
-## Tips
-- We suggest you **emphasize motivation, questions, and results over methods**
-- after all, interested folks can view your complete project report on the same page.
+.textbox iframe {
+  display: block;
+  margin: 20px auto;
+  border-radius: 5px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+}
 
-)
+nav a:hover {
+  text-decoration: underline;
+  color: #007BFF; /* Blue for hover effect */
+  transition: color 0.3s ease;
+}
 
-# Main Research Questions:
+button, .btn {
+  background-color: #007BFF; /* Blue button */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-- What factors influence a user's monthly calorie expenditure?
-- What factors determine the workout duration of members?
-- What factors drive members' choice of subscription plans?
+button:hover, .btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
 
-# Project Overview (Screencast)
-Click on the video below to explore the capabilities of this site and enjoy a summary of our key highlights.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/vNYQC4V8GG4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+@media (max-width: 768px) {
+  .title-box, .textbox {
+    margin: 10px;
+    padding: 15px;
+    font-size: 90%; /* Adjust font size for smaller screens */
+  }
+}
