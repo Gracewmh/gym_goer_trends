@@ -1,0 +1,31 @@
+.list-group {
+  background-color: #F5F5F5; 
+  border-radius: 10px;
+  padding: 10px;
+}
+
+
+.list-group-item.active {
+  background-color: #6C757D;
+  color: white; 
+  border-color: #5A6268;
+}
+
+
+.list-group-item {
+  background-color: #FFFFFF;
+  color: #333; 
+}
+
+
+.list-group-item:hover {
+  background-color: #D6DBDF; 
+  color: #6C757D; 
+}
+
+
+.list-group-item.active {
+  background-color: #6C757D !important; 
+  color: white !important; 
+  border-color: #5A6268 !important;
+}

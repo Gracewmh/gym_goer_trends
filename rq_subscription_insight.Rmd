@@ -27,15 +27,36 @@ knitr::opts_chunk$set(
   out.width = "90%"
   )
 
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
+theme_set(theme_minimal() + 
+            theme(
+              legend.position = "bottom", 
+              panel.background = element_rect(fill = "#FFFFFF", color = NA), 
+              panel.grid.major = element_line(color = "#D6DBDF"),          
+              panel.grid.minor = element_blank(),                          
+              plot.title = element_text(size = 16, color = "#333333", face = "bold"),
+              axis.title = element_text(size = 14, color = "#333333"),     
+              axis.text = element_text(size = 12, color = "#6C757D"),      
+              legend.background = element_rect(fill = "#F5F5F5"),          
+              legend.key = element_rect(fill = "#FFFFFF")                  
+            )
+)
+
+update_geom_defaults("bar", list(fill = "#6C757D"))   
+update_geom_defaults("point", list(colour = "#A3C9A8")) 
+update_geom_defaults("line", list(colour = "#F4A261")) 
+
+
+scale_colour_discrete <- function(...) scale_colour_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+scale_fill_discrete <- function(...) scale_fill_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+
 
 options(
   ggplot2.continuous.colour = "viridis",
   ggplot2.continuous.fill = "viridis"
 )
 
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ```{r}
