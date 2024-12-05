@@ -206,7 +206,7 @@ The scatter plot shows no clear relationship between total check-ins and average
 max_duration_by_city <- final |> 
   group_by(gym_location) |>   
   slice_max(order_by = workout_duration, n = 1, with_ties = FALSE) |>   
-  select(gym_location, gender, workout_duration)  
+  select(gym_location, gender)  
 
 max_duration_by_city
 max_duration_by_city |> 
