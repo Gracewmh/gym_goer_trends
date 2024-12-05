@@ -39,7 +39,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ```{r}
-final = readRDS("final.rds")
+final = read_csv("datasets/final.csv")
 users_data = read_csv("datasets/users_data.csv")
 gyms_data = read_csv("datasets/gym_locations_data.csv")
 ```
