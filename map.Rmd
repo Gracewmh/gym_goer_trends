@@ -1,0 +1,104 @@
+---
+title: "Map of Gym Locations and Member Origins"
+author: "Huizhong Peng"
+date: "2024-12-04"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(leaflet)
+library(tmaptools)
+
+options(scipen = 999)
+
+knitr::opts_chunk$set(
+        collapse = TRUE, 
+        message = FALSE, 
+        warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+  )
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+```
+
+```{r}
+users_data = read_csv("datasets/users_data.csv")
+gyms_data = read_csv("datasets/gym_locations_data.csv")
+```
+
+# Gyms' Locations (in city):
+Click on a city to view detailed information about gyms in each location.
+
+```{r}
+city_names = gyms_data |> pull(location)
+city_coords = geocode_OSM(city_names)
+gyms_data_n = gyms_data
+
+gyms_data_n$lat <- city_coords$lat
+gyms_data_n$lon <- city_coords$lon
+
+leaflet(data = gyms_data_n) |> 
+  addTiles() |> 
+  addMarkers(
+    lng = ~lon, lat = ~lat, 
+    popup = ~paste(
+      "Gym City:", city_names, "<br />",
+      "Gym Type:", gym_type, "<br />",
+      "Facilities:", facilities)
+  )
+```
+
+# Gym-goers' Origins (in city):
+Click on a city to view detailed information about the members from each cities.
+
+```{r}
+users_data_n = 
+  users_data |> 
+  group_by(user_location) |> 
+  summarize(
+    male.n = sum(gender == "Male"),
+    female.n = sum(gender == "Female"),
+    age.mean = mean(age),
+    basic.n = sum(subscription_plan == "Basic"),
+    pro.n = sum(subscription_plan == "Pro"),
+    student.n = sum(subscription_plan == "Student")
+  )
+
+location_names = users_data_n |> pull(user_location)
+location_coords = geocode_OSM(location_names)
+
+users_data_n$lat <- location_coords$lat
+users_data_n$lon <- location_coords$lon
+
+leaflet(data = users_data_n) %>%
+  addTiles() %>%
+  addMarkers(
+    lng = ~lon, 
+    lat = ~lat, 
+    popup = ~paste(
+      "User City:", user_location, "<br />", 
+      "Average Age:", round(age.mean, 2), "<br />",
+      "Male:", male.n, "<br />", 
+      "Female:", female.n, "<br />", 
+      "Basic Plan Users:", basic.n, "<br />", 
+      "Pro Plan Users:", pro.n, "<br />", 
+      "Student Plan Users:", student.n
+    )
+  )
+```
+
+
+
+
+
+
+
+
+

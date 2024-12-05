@@ -1,7 +1,232 @@
 ---
 title: "Subscription Preferences"
+author: "Huizhong Peng"
+date: "2024-11-07"
 output: 
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide
 ---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+options(scipen = 999)
+
+knitr::opts_chunk$set(
+        collapse = TRUE, 
+        message = FALSE, 
+        warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+  )
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r}
+final = readRDS("final.rds")
+users_data = read_csv("datasets/users_data.csv")
+gyms_data = read_csv("datasets/gym_locations_data.csv")
+```
+
+## Brief intro
+
+Among all the subscription plans, the monthly fee for basic plan is \$19.99, for pro plan is \$49.99, and for student plan is \$9.99.
+
+We are interested in which factors may influence gym-goers' subscription plan type. 
+
+## EDA
+
+### Subcription Plan by Gender
+
+```{r}
+gender_plan_p =
+  users_data |> 
+  ggplot(aes(x = subscription_plan, fill = gender)) +
+  geom_bar(position = "dodge", width = .6) +
+  labs(
+    title = "Subscription Plan by Gender", 
+    x = "Subscription Plan", 
+    y = "Count")
+
+ggplotly(gender_plan_p)
+```
+
+The number of gym-goers choosing the pro subscription plan is similar to the number choosing the basic subscription plan, with slightly more men than women.
+
+### Subscription Plan by Cities Where Users Live
+
+```{r}
+city_plan_p =
+  users_data |> 
+  ggplot(aes(x = user_location, fill = subscription_plan)) +
+  geom_bar(position = "dodge", width = .7) +
+  labs(
+    title = "Subscription Plan by Cities Where Gym-goers Live", 
+    x = "City", 
+    y = "Count") +
+  coord_flip()
+
+ggplotly(city_plan_p)
+
+city_plan =
+  users_data |> 
+  group_by(user_location, subscription_plan) |> 
+  summarize(
+    frequency = n()
+  ) |> 
+  pivot_wider(
+    names_from = subscription_plan,
+    names_prefix = "plan_",
+    values_from = frequency
+  )
+
+city_plan |> 
+  kable(digits = 3, caption = "Subscription Plan by Cities Where Gym-goers Live")
+```
+
+Atlanta has the most gym-goers choosing pro subscription plan and student plan, and Las Vegas has the most gym-goers choosing basic subscription plan.
+
+### Distribution of Age across Subscription Plans
+
+```{r}
+age_plan_p =
+  users_data |> 
+  ggplot(aes(x = age, fill = subscription_plan)) +
+  geom_density(linewidth = .2) + 
+  facet_grid(subscription_plan ~ .) +
+  labs(
+    title = "Distribution of Age across Subscription Plans",
+    x = "Age",
+    y = "Density"
+  )
+
+ggplotly(age_plan_p)
+
+age_plan = 
+  users_data |> 
+  group_by(subscription_plan) |> 
+  summarize(
+    age.min = min(age),
+    age.max = max(age),
+    age.mean = round(mean(age), 0),
+  )
+```
+
+The age distribution of gym-goers is relatively even across different subscription plans. The youngest age is `r age_plan |> pull(age.min) |> min()` years old, the oldest is `r age_plan |> pull(age.max) |> max()` years old, and the mean age is `r age_plan |> pull(age.mean) |> mean()` years old.
+
+## Statistical analysis
+
+In this data analysis, we employ a logistic regression model to assess the relationship between the gym-goers' subscription plans and the average duration of their workouts, as well as average calories burned and cities where they live.
+
+### Subscription Plan and Average duration
+
+```{r}
+factors_plan =
+  final |> 
+  filter(subscription_plan != "Student") |> 
+  mutate(
+    plan.pro = ifelse(subscription_plan == "Pro", 1, 0)
+  ) |> 
+  group_by(user_id, user_location, plan.pro) |> 
+  summarize(
+    calories.mean = mean(calories_burned),
+    duration.mean = mean(workout_duration)
+  )
+
+fit_calories = glm(plan.pro ~ calories.mean, 
+                   data = factors_plan, family = binomial())
+
+fit_calories |> 
+  broom::tidy() |> 
+  select(term, estimate, p.value) |> 
+  kable(digits = 3)
+```
+
+### Subscription Plan and calories burned
+
+```{r}
+fit_duration = glm(plan.pro ~ duration.mean, 
+                  data = factors_plan, family = binomial())
+
+fit_duration |> 
+  broom::tidy() |> 
+  select(term, estimate, p.value) |> 
+  kable(digits = 3)
+```
+
+### Subscription Plan and cities
+
+```{r}
+fit_cities = glm(plan.pro ~ user_location, 
+                    data = factors_plan, family = binomial())
+
+fit_cities |> 
+  broom::tidy() |> 
+  mutate(
+    term = sub("user_location", "", term)) |>
+  select(user_location = term, estimate, p.value) |> 
+  kable(digits = 3)
+```
+
+Overall, Las Vegas is the only city that shows a statistically significant negative impact on subscription plan (p < .05), while the effects of other cities are not significant.
+
+Similarly, we are also interested in the relationship between subscription plan and gym types.
+
+### Subscription Plan and Gym Types
+
+```{r}
+frequency_plan = 
+  final |> 
+  group_by(user_id, gym_type, subscription_plan) |> 
+  summarize(
+    frequency = n()
+  )
+
+frequency_plan |> 
+  ggplot(aes(x = gym_type, y = frequency, fill = subscription_plan)) +
+  geom_boxplot() + 
+  labs(
+    title = "Frequency of visits by Gym Types",
+    x = "Age",
+    y = "Density"
+  )
+
+frequency_fit = 
+  frequency_plan |>
+  lm(frequency ~ gym_type, data = _) |> 
+  broom::tidy() |> 
+  mutate(
+    term = sub("gym_type", "", term)) |>
+  select(gym_type = term, estimate, p.value) 
+
+frequency_fit |> 
+  kable(digits = 3)
+```
+
+The results of the linear regression model suggest that gym type significantly influences the frequency of gym visits (p < .05). 
+
+On average, gym-goers visited the budget gyms `r frequency_fit$estimate[1] |> round(0)` times, premium gyms `r frequency_fit$estimate[1] |> round(0) + frequency_fit$estimate[2] |> round(0)` times, and standard gyms `r frequency_fit$estimate[1] |> round(0) + frequency_fit$estimate[3] |> round(0)` times in 2023.
+
+## Conclusion
+
+- We do not observe any difference in users' subscription plans by their gender, age, average duration of workouts and average calories burned. 
+
+- Las Vegas has a statistically significant impact on subscription plan.
+
+- Gym type plays a crucial role in determining how often users visit the gym.

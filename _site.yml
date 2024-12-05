@@ -3,6 +3,8 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
+    - text: "Map"
+      href: map.html
     - text: "Calorie Expenditure"
       href: rq_calorie_expenditure.html
     - text: "Workout Duration"
