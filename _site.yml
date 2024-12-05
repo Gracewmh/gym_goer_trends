@@ -2,15 +2,20 @@ name: "Yay internet!"
 output_dir: "."
 navbar:
   title: "Home"
-  right:
+  left:
+    - text: "Data"
+      href: Report.html
     - text: "Map"
       href: map.html
-    - text: "Calorie Expenditure"
-      href: rq_calorie_expenditure.html
-    - text: "Workout Duration"
-      href: rq_workout_duration.html
-    - text: "Subscription Preferences"
-      href: rq_subscription_insight.html
+    - text: "Analysis"
+      menu:
+        - text: "Calorie Expenditure"
+          href: rq_calorie_expenditure.html
+        - text: "Workout Duration"
+          href: rq_workout_duration.html
+        - text: "Subscription Preferences"
+          href: rq_subscription_insight.html
+  right:
     - text: "Report"
       href: Report.html
     - text: "About us"
