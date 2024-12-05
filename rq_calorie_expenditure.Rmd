@@ -1,7 +1,244 @@
 ---
 title: "Calorie Expenditure Factors"
 output: 
-  html_document:
-    toc: true
-    toc_float: true
+    html_document:
+      toc: true
+      toc_float: true
+      code_folding: hide
 ---
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(broom)
+library(tableone) # download package first
+library(kableExtra)  # download package first
+
+options(scipen = 999)
+
+knitr::opts_chunk$set(
+        collapse = TRUE, 
+        message = FALSE, 
+        warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+  )
+
+theme_set(theme_minimal() + 
+            theme(
+              legend.position = "bottom", 
+              panel.background = element_rect(fill = "#FFFFFF", color = NA), 
+              panel.grid.major = element_line(color = "#D6DBDF"),          
+              panel.grid.minor = element_blank(),                          
+              plot.title = element_text(size = 16, color = "#333333", face = "bold"),
+              axis.title = element_text(size = 14, color = "#333333"),     
+              axis.text = element_text(size = 12, color = "#6C757D"),      
+              legend.background = element_rect(fill = "#F5F5F5"),          
+              legend.key = element_rect(fill = "#FFFFFF")                  
+            )
+)
+
+update_geom_defaults("bar", list(fill = "#6C757D"))   
+update_geom_defaults("point", list(colour = "#A3C9A8")) 
+update_geom_defaults("line", list(colour = "#F4A261")) 
+
+
+scale_colour_discrete <- function(...) scale_colour_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+scale_fill_discrete <- function(...) scale_fill_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+```
+
+```{r import dataset}
+final = read_csv("datasets/final.csv")
+```
+
+# Brief intro
+
+This page explores the factors influencing calories burned per minute, focusing on workout duration, workout type, demographic, and geographic variables. Key findings highlight the role of workout characteristics, such as shorter durations and specific activities like Swimming, as well as environmental factors like gym facilities and regional differences, in determining calorie-burning efficiency.
+
+# EDA 
+
+## Calories Burned per Minute vs Workout Duration
+```{r plot1}
+plot1 =
+  final |>
+  ggplot(aes(x = workout_duration, y = calories_per_min)) +
+  geom_bin2d() +
+  scale_fill_gradientn(colors = c("#FFFFFF", "#A3C9A8", "#F4A261", "#E76F51")) +
+  labs(
+    title = "Workout Duration vs Calories Burned", 
+    x = "Workout Duration (minutes)", 
+    y = "Calories Burned per Minute"
+  )
+ggplotly(plot1)
+```
+
+This 2D histogram shows that shorter workout duration have higher calorie burn rates, while longer durations reflect lower rates, likely due to pacing. The highest data density is at longer durations with moderate burn rates.
+
+## Calories Burned Per Minute Distribution by Workout Type
+```{r plot2}
+plot2 =
+  final |>
+  ggplot(aes(x = calories_per_min, fill = workout_type)) +
+  geom_histogram(binwidth = 1, alpha = 0.7, position = "dodge") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(
+    title = "Calories Burned Per Minute Distribution by Workout Type",
+    x = "Calories Burned Per Minute",
+    y = "Count"
+  )
+ggplotly(plot2)
+```
+
+This histogram shows the distribution of calories burned per minute, with most activities clustering below 15 calories per minute. Overlap in distributions suggests similar calorie burn patterns across workout types, with some like Yoga dominating the lower range.
+
+# Statistical analysis
+
+## Baseline characteristics
+```{r Baseline characteristics}
+final = final |>
+  mutate(
+    calories_per_min = as.numeric(calories_per_min),
+    age = as.numeric(age),
+    gender = as.factor(gender),
+    workout_month = as.numeric(workout_month),
+    workout_timecat = factor(workout_timecat, levels = c("morning", "afternoon", "evening")),
+    workout_type = as.factor(workout_type),
+    workout_duration = as.numeric(workout_duration),
+    membership_days = as.numeric(membership_days),
+    user_location = as.factor(user_location),
+    subscription_plan = as.factor(subscription_plan),
+    gym_type = as.factor(gym_type),
+    price_per_month = as.numeric(price_per_month)
+  )
+
+mean_calories_per_min = mean(final$calories_per_min, na.rm = TRUE)
+
+final = final |>
+  mutate(
+    calories_per_min_group = ifelse(calories_per_min > mean_calories_per_min, "High", "Low"),
+    calories_per_min_group = as.factor(calories_per_min_group)
+  )
+
+vars = c(
+  "age", "gender", "workout_month", "workout_timecat", 
+  "workout_type", "workout_duration", "membership_days", "user_location", 
+  "subscription_plan", "gym_type", "gym_location", "climbing_wall",
+  "swimming_pool", "basketball_court", "yoga_classes", "sauna", "crossfit", 
+  "price_per_month"
+) 
+
+table_one = CreateTableOne(vars = vars, strata = "calories_per_min_group", data = final, test = TRUE)
+
+table_one_df = print(table_one, showAllLevels = TRUE, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)
+
+# Remove the "test" column
+table_one_df = table_one_df[, -ncol(table_one_df)]
+
+kable(
+  table_one_df,
+  format = "html",
+  caption = "Baseline Characteristics by Calories Burned Group"
+) |>
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    font_size = 14
+  ) |>
+  row_spec(0, bold = TRUE, color = "white", background = "#A3C9A8") |>
+  column_spec(2:ncol(table_one_df), width = "4cm") |>
+  row_spec(1:nrow(table_one_df), background = "#f9f9f9", hline_after = TRUE)
+```
+
+**Baseline characteristics stratified by "High" and "Low" calories burned per minute reveal:**
+
+- **Workout duration**: High-calorie burners show significantly shorter workout durations (123.15 ± 37.07 minutes) compared to low-calorie burners (71.33 ± 32.04 minutes, p < 0.001).
+
+- **Gym location**: Significant overall variation between groups (p = 0.024), indicating regional differences in workout intensity.
+  
+- **Swimming pool presence**: Associated with higher calories burned (p = 0.005), indicating specific facilities may enhance workout effectiveness.
+
+## Linear regression
+```{r}
+model_calories = lm(
+  calories_per_min ~ age + gender + user_location + workout_duration + workout_type + workout_duration*workout_type,
+  data = final
+)
+model_summary = tidy(model_calories) |>
+  mutate(
+    estimate = round(estimate, 5),
+    std.error = round(std.error, 5),
+    statistic = round(statistic, 2),
+    p_value = ifelse(p.value < 0.001, "<0.001", round(p.value, 3))
+  ) |>
+  select(term, estimate, std.error, statistic, p_value) |>
+  rename(
+    Variable = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `t-value` = statistic,
+    `p-value` = p_value
+  )
+
+model_summary |>
+  kable("html", caption = "Regression Outcome: Calories Burned Per Minute") |>
+  kable_styling(
+    full_width = FALSE, 
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+    font_size = 14,
+    position = "center"
+  ) |>
+  column_spec(1, width = "1cm", extra_css = "text-align: center;") |>
+  column_spec(2:5, width = "2.5cm", extra_css = "text-align: center;") |>
+  row_spec(0, bold = TRUE, color = "white", background = "#A3C9A8", extra_css = "text-align: center;")
+```
+**Linear regression results for calories burned per minute reveal several significant predictors:**
+
+- **Age**:
+  - No significant association with calories burned per minute (Estimate = -0.00047, p = 0.592).
+
+- **Gender**:
+  - "Non-binary" gender is positively associated with calories burned per minute (Estimate = 0.10387, p = 0.013).
+  - No significant association for "Male" gender compared to the reference category (Estimate = 0.00839, p = 0.736).
+
+- **User location**:
+  - Miami is positively associated with calories burned per minute (Estimate = 0.10592, p = 0.042).
+  - Other locations, such as Austin, Boston, and Detroit, show no significant differences.
+
+- **Workout duration**:
+  - Strong negative association with calories burned per minute (Estimate = -0.12044, p < 0.001).
+  - Indicates longer workouts are associated with slightly reduced calorie burn rates per minute.
+
+- **Workout types**:
+  - **Swimming**: Significantly associated with higher calories burned per minute (Estimate = 0.38898, p < 0.001).
+  - **Weightlifting**: Also positively associated (Estimate = 0.29708, p = 0.006).
+  - **Yoga**: Moderate positive association (Estimate = 0.23139, p = 0.031).
+  - Other workout types, such as CrossFit and Pilates, show no significant differences.
+
+- **Interaction terms**:
+  - Significant negative interaction between workout duration and specific workout types:
+    - **Swimming**: Interaction Estimate = -0.00288, p = 0.002.
+    - **Weightlifting**: Interaction Estimate = -0.00127, p = 0.022.
+  - These interactions suggest that as workout duration increases, the positive effects of Swimming and Weightlifting on calories burned per minute diminish slightly.
+  
+# Conclusion
+
+- This analysis highlights the complex interplay between workout characteristics, demographic factors, and geographic influences on calorie-burning efficiency.
+
+- Shorter workouts generally result in higher calorie burn rates per minute, but the benefits of specific activities, such as Swimming and Weightlifting, may diminish with increased workout duration.
+
+- Activities like Swimming, Weightlifting, and Yoga are particularly effective in enhancing calorie burn rates compared to other exercises.
+
+- Demographic factors, such as gender identity, and geographic location, such as Miami, also play a role in influencing calorie-burning outcomes.
+
+- These findings underscore the importance of tailoring exercise programs to individual characteristics and environmental factors to optimize workout efficiency.
