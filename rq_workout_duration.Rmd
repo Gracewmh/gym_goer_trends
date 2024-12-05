@@ -212,7 +212,13 @@ max_duration_by_city
 max_duration_by_city |> 
   kable(
     caption = "Gender with the Highest Workout Duration in Each City"
-  )
+  )|>
+    kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    font_size = 14
+  ) |>
+  row_spec(0, bold = TRUE, color = "white", background = "#F4A261")
 ```
 
 The table highlights the gender associated with the highest workout duration across different cities. Female users dominate, achieving the longest durations in cities like Chicago, Houston, and San Antonio. Male users recorded the highest durations in Dallas, Los Angeles, and New York, while non-binary users had the longest durations in Philadelphia and San Diego.
@@ -264,7 +270,13 @@ results_df <- data.frame(
 
 kable(results_df,
       digits = 3, 
-      caption = "Linear Regression Results")
+      caption = "Linear Regression Results")|>
+    kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    font_size = 14
+  ) |>
+  row_spec(0, bold = TRUE, color = "white", background = "#F4A261")
 ```
 
 - Non-binary users work out significantly longer than females (coef = 0.622, p = 0.026), while no significant difference was found between males and females.
