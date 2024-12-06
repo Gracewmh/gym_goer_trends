@@ -1,5 +1,5 @@
 ---
-title: "Report RQ"
+title: "Gym Goer Trends: Project Report"
 output: 
     html_document:
       toc: true
@@ -62,6 +62,20 @@ options(
   ggplot2.continuous.fill = "viridis"
 )
 ```
+
+<img src="images/report.png" alt="Subscription Preferences" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
+## Motivation
+
+In modern society, fitness has become an integral part of many people's daily lives. However, there is limited in-depth data analysis on the behavioral patterns, demographic characteristics, and geographic distributions of gym-goers. This project aims to address this gap by systematically analyzing data on calorie expenditure, workout duration, and subscription plan choices among gym-goers to identify key factors influencing these behaviors. Our goal is to provide valuable insights for the fitness industry, public health researchers, and policymakers, enabling them to better understand fitness trends and develop more effective interventions and strategies to promote overall health.
+
+<br>
+
+## Related Work
+
+In the "Gym Goer Trends" project, we drew inspiration from several key resources. The [2022 Fitness Behavior and Consumer Research Report](https://shipin.sportshow.com.cn/file/pdf/2022DZJS.pdf) provided insights into fitness trends and socioeconomic impacts. A study on [Machine Learning for Calorie Estimation](https://blog.csdn.net/2301_79555157/article/details/135997594) introduced innovative approaches to predict calorie consumption using image recognition. Additionally, a [Survey on Residents’ Fitness Habits](https://pdf.hanspub.org/SA20210400000_42931384.pdf) analyzed fitness behaviors across cities, offering valuable context for our analysis. These resources guided our exploration of fitness behaviors, calorie consumption, and workout trends.
+
+<br>
 
 ## Initial Questions
 
@@ -943,5 +957,5 @@ You can find our shiny app here: [*Calories Burned Calculator*](https://xw2972.s
 
 Explore the app to plan your workouts effectively and maximize your calorie burn!
 
-
+<img src="images/cal_burn_calculator.jpg" alt="cal_burn_calculator" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 

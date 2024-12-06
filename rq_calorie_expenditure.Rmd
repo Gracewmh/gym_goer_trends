@@ -58,10 +58,11 @@ options(
 )
 ```
 
+<img src="images/cal_exp.jpg" alt="Subscription Preferences" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
 ```{r import dataset}
 final = read_csv("datasets/final.csv")
 ```
-
 # Brief intro
 
 This page explores the factors influencing calories burned per minute, focusing on workout duration, workout type, demographic, and geographic variables. Key findings highlight the role of workout characteristics, such as shorter durations and specific activities like Swimming, as well as environmental factors like gym facilities and regional differences, in determining calorie-burning efficiency.

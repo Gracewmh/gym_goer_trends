@@ -7,8 +7,7 @@ output:
     toc_float: true
     code_folding: hide
 ---
-
-## Data Source and Cleaning
+<img src="images/data.jpg" alt="Data visualization overview" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 You can find the raw datasets [here](https://www.kaggle.com/datasets/mexwell/gym-check-ins-and-user-metadata). Click the button to show relative code. 
 

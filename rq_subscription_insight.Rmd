@@ -57,6 +57,8 @@ options(
 
 ```
 
+<img src="images/membership.webp" alt="Subscription Preferences" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
 ```{r}
 final = read_csv("datasets/final.csv")
 users_data = read_csv("datasets/users_data.csv")

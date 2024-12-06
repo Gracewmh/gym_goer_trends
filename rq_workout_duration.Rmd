@@ -115,6 +115,8 @@ final = users_gyms_tidy |>
 ## Brief intro
 This analysis explores workout duration patterns among 300,000 gym members across U.S. cities. By examining demographic factors, location differences, and membership characteristics, we aim to identify key determinants of workout duration to provide insights for gym management and operational strategies.
 
+<img src="images/duration.jpg" alt="Subscription Preferences" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
 ## EDA
 ### Relationship between Age and Workout Duration
 ```{r}
