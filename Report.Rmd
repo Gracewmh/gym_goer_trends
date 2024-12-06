@@ -772,7 +772,7 @@ The plot suggests that the model with interaction terms has a much lower RMSE, i
 
 Build a linear regression model: 
 
-$$Y_{workout.duration}=\beta_0 + \beta_1X_{gender} + \beta_2X_{age} + \beta_3X_{user.location} + \beta_4X_{gym.location} + \beta_5X_{subscription.plan}+ \beta_6X_{membership.days} + \beta_7X_{gym.type} + \beta_8X_{gym.facility} + \epsilon$$
+$$Y_{workout.duration}=\beta_0 + \beta_1X_{gender} + \beta_2X_{age} + \beta_3X_{user.location} + \beta_4X_{gym.location} + \beta_5X_{subscription.plan}+ \beta_6X_{membership.days} + \epsilon$$
 
 ```{r}
 final_2 <- final |> 
@@ -780,14 +780,7 @@ final_2 <- final |>
     gender = as.factor(gender),
     user_location = as.factor(user_location),
     gym_location = as.factor(gym_location),
-    subscription_plan = as.factor(subscription_plan),
-    gym_type = as.factor(gym_type),
-    climbing_wall = as.factor(climbing_wall),
-    swimming_pool = as.factor(swimming_pool),
-    basketball_court = as.factor(basketball_court),
-    yoga_classes = as.factor(yoga_classes),
-    sauna = as.factor(sauna),
-    crossfit = as.factor(crossfit)
+    subscription_plan = as.factor(subscription_plan)
   )
 
 model_duration <- lm(workout_duration ~ 
@@ -796,14 +789,7 @@ model_duration <- lm(workout_duration ~
                   user_location + 
                   gym_location + 
                   subscription_plan + 
-                  membership_days +
-                  gym_type + 
-                  climbing_wall + 
-                  swimming_pool + 
-                  basketball_court + 
-                  yoga_classes + 
-                  sauna + 
-                  crossfit,
+                  membership_days,
                   data = final)
 
 model_duration_summary = tidy(model_duration) |>
@@ -961,6 +947,9 @@ On average, gym-goers visited the budget gyms `r frequency_fit$Estimate[1] |> ro
 The analysis highlights the multifaceted factors influencing calories burned per minute, emphasizing the interplay between workout characteristics, demographics, and environmental factors. Shorter workouts and specific activities, such as Swimming and Weightlifting, are effective in enhancing calorie burn, but their efficiency may decrease as workout duration increases. Geographic and facility-related factors, such as gym location and the presence of swimming pools, further demonstrate the importance of external conditions in shaping workout outcomes.
 
 These findings suggest that tailored exercise plans should consider individual and contextual factors to optimize workout efficiency. By aligning workout duration, activity type, and access to facilities, both personal fitness goals and broader public health outcomes can be better supported. Future research can build on these results to explore strategies that maximize calorie burn and overall exercise effectiveness in diverse populations and environments.
+
+### Temporal Check-in Patterns and Operational Implications
+The temporal analysis of gym check-in patterns provides valuable insights into urban fitness behaviors and facility utilization. The consistent peak at 14:00 across most locations, alongside location-specific morning peaks in Phoenix and San Antonio, suggests that gym usage patterns are shaped by both universal work schedules and local characteristics. These distinct patterns have important implications for gym management, from optimizing staffing schedules to designing location-specific programming. Understanding these temporal variations could inform strategic decisions in resource allocation and help develop targeted services that better align with local usage patterns.
 
 ### Workout Duration
 

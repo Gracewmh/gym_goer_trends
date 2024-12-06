@@ -286,14 +286,7 @@ final_2 <- final |>
     gender = as.factor(gender),
     user_location = as.factor(user_location),
     gym_location = as.factor(gym_location),
-    subscription_plan = as.factor(subscription_plan),
-    gym_type = as.factor(gym_type),
-    climbing_wall = as.factor(climbing_wall),
-    swimming_pool = as.factor(swimming_pool),
-    basketball_court = as.factor(basketball_court),
-    yoga_classes = as.factor(yoga_classes),
-    sauna = as.factor(sauna),
-    crossfit = as.factor(crossfit)
+    subscription_plan = as.factor(subscription_plan)
   )
 
 model <- lm(workout_duration ~ 
@@ -302,14 +295,7 @@ model <- lm(workout_duration ~
             user_location + 
             gym_location + 
             subscription_plan + 
-            membership_days +
-            gym_type + 
-            climbing_wall + 
-            swimming_pool + 
-            basketball_court + 
-            yoga_classes + 
-            sauna + 
-            crossfit,
+            membership_days,
             data = final)
 
 model_coef <- coef(summary(model))
