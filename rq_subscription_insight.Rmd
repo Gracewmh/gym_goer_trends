@@ -1,7 +1,5 @@
 ---
 title: "Subscription Preferences"
-author: "Huizhong Peng"
-date: "2024-11-07"
 output: 
   html_document:
     toc: true
@@ -65,7 +63,7 @@ users_data = read_csv("datasets/users_data.csv")
 gyms_data = read_csv("datasets/gym_locations_data.csv")
 ```
 
-## Brief intro
+## Brief Intro
 
 Among all the subscription plans, the monthly fee for basic plan is \$19.99, for pro plan is \$49.99, and for student plan is \$9.99.
 
@@ -175,7 +173,12 @@ fit_calories = glm(plan.pro ~ calories.mean,
 
 fit_calories |> 
   broom::tidy() |> 
-  select(term, estimate, p.value) |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  rename(
+    Variable = term,
+    `P-value` = p.value
+  ) |> 
   kable(digits = 3)
 ```
 
@@ -187,7 +190,12 @@ fit_duration = glm(plan.pro ~ duration.mean,
 
 fit_duration |> 
   broom::tidy() |> 
-  select(term, estimate, p.value) |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  rename(
+    Variable = term,
+    `P-value` = p.value
+  ) |> 
   kable(digits = 3)
 ```
 
@@ -200,12 +208,17 @@ fit_cities = glm(plan.pro ~ user_location,
 fit_cities |> 
   broom::tidy() |> 
   mutate(
-    term = sub("user_location", "", term)) |>
-  select(user_location = term, estimate, p.value) |> 
+    term = sub("User_location", "", term)) |>
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  rename(
+    Variable = term,
+    `P-value` = p.value
+  ) |> 
   kable(digits = 3)
 ```
 
-Overall, Las Vegas is the only city that shows a statistically significant negative impact on subscription plan (p < .05), while the effects of other cities are not significant.
+Overall, Las Vegas is the only city that shows a statistically significant negative impact on subscription plan ($p < 0.05$), while the effects of other cities are not significant.
 
 Similarly, we are also interested in the relationship between subscription plan and gym types.
 
@@ -224,25 +237,30 @@ frequency_plan |>
   geom_boxplot() + 
   labs(
     title = "Frequency of visits by Gym Types",
-    x = "Age",
-    y = "Density"
+    x = "Gym Types",
+    y = "Frequency"
   )
 
 frequency_fit = 
   frequency_plan |>
   lm(frequency ~ gym_type, data = _) |> 
   broom::tidy() |> 
-  mutate(
-    term = sub("gym_type", "", term)) |>
-  select(gym_type = term, estimate, p.value) 
+  select(term, estimate, std.error, statistic, p.value) |> 
+  rename(
+    Variable = term,
+    Estimate = estimate,
+    `Std` = std.error,
+    `T statistic` = statistic,
+    `P-value` = p.value
+  ) 
 
 frequency_fit |> 
   kable(digits = 3)
 ```
 
-The results of the linear regression model suggest that gym type significantly influences the frequency of gym visits (p < .05). 
+The results of the linear regression model suggest that gym type significantly influences the frequency of gym visits ($p < 0.05$). 
 
-On average, gym-goers visited the budget gyms `r frequency_fit$estimate[1] |> round(0)` times, premium gyms `r frequency_fit$estimate[1] |> round(0) + frequency_fit$estimate[2] |> round(0)` times, and standard gyms `r frequency_fit$estimate[1] |> round(0) + frequency_fit$estimate[3] |> round(0)` times in 2023.
+On average, gym-goers visited the budget gyms `r frequency_fit$Estimate[1] |> round(0)` times, premium gyms `r frequency_fit$Estimate[1] |> round(0) + frequency_fit$Estimate[2] |> round(0)` times, and standard gyms `r frequency_fit$Estimate[1] |> round(0) + frequency_fit$Estimate[3] |> round(0)` times in 2023.
 
 ## Conclusion
 
@@ -251,3 +269,4 @@ On average, gym-goers visited the budget gyms `r frequency_fit$estimate[1] |> ro
 - Las Vegas has a statistically significant impact on subscription plan.
 
 - Gym type plays a crucial role in determining how often users visit the gym.
+

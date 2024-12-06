@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Processinng</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="map.html">Map</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="rq_calorie_expenditure.html">Calorie Expenditure</a>
+    </li>
+    <li>
+      <a href="rq_workout_duration.html">Workout Duration</a>
+    </li>
+    <li>
+      <a href="rq_subscription_insight.html">Subscription Preferences</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="https://xw2972.shinyapps.io/my_shiny_app/">Calorie Predictor</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Report.html">Report</a>
+</li>
+<li>
+  <a href="About-us.html">About us</a>
+</li>
+<li>
+  <a href="https://github.com/Gracewmh/gym_goer_trends">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="mailto:&lt;mw3743@cumc.columbia.edu&gt;,&lt;hp2661@cumc.columbia.edu&gt;,&lt;xw2972@cumc.columbia.edu&gt;,&lt;yg2964@cumc.columbia.edu&gt;,&lt;yj2802@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Data Processinng</h1>
+
+</div>
+
+
+<div id="data-source-and-cleaning" class="section level2">
+<h2>Data Source and Cleaning</h2>
+<p>You can find the raw datasets <a
+href="https://www.kaggle.com/datasets/mexwell/gym-check-ins-and-user-metadata">here</a>.
+Click the button to show relative code.</p>
+<pre class="r"><code># Import 4 raw datasets
+users_data = read_csv(&quot;datasets/users_data.csv&quot;)
+gyms_data = read_csv(&quot;datasets/gym_locations_data.csv&quot;)
+history_data = read_csv(&quot;datasets/checkin_checkout_history_updated.csv&quot;)
+plans_data = read_csv(&quot;datasets/subscription_plans.csv&quot;)
+
+# Clean/tidy 4 datasets
+## 1. users_data --&gt; users_tidy:
+users_tidy = users_data |&gt;
+  mutate(
+    name = paste(first_name, last_name),
+    membership_days = as.numeric(difftime(as.Date(&quot;2024-09-30&quot;), as.Date(sign_up_date, format = &quot;%Y-%m-%d&quot;), units = &quot;days&quot;))
+  ) |&gt;
+  select(user_id, name, age, gender, membership_days, user_location, subscription_plan)
+
+## 2. gyms_data --&gt; gyms_tidy:
+gyms_tidy = gyms_data |&gt;
+  mutate(
+    climbing_wall = ifelse(grepl(&quot;Climbing Wall&quot;, facilities), 1, 0),
+    swimming_pool = ifelse(grepl(&quot;Swimming Pool&quot;, facilities), 1, 0),
+    basketball_court = ifelse(grepl(&quot;Basketball Court&quot;, facilities), 1, 0),
+    yoga_classes = ifelse(grepl(&quot;Yoga Classes&quot;, facilities), 1, 0),
+    sauna = ifelse(grepl(&quot;Sauna&quot;, facilities), 1, 0),
+    crossfit = ifelse(grepl(&quot;CrossFit&quot;, facilities), 1, 0)) |&gt;
+  select(gym_id, location, gym_type, climbing_wall, swimming_pool, basketball_court, yoga_classes, sauna, crossfit)
+
+## 3. history_data --&gt; history_tidy
+history_tidy = history_data |&gt;
+  mutate(
+    workout_year = year(as.Date(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;)),
+    workout_month = month(as.Date(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;)),
+    workout_time = format(as.POSIXct(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;), &quot;%H:%M&quot;),
+    workout_duration = as.numeric(difftime(as.POSIXct(checkout_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;),
+                                         as.POSIXct(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;),
+                                         units = &quot;mins&quot;)),
+    workout_timecat = case_when(
+      hour(as.POSIXct(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;)) %in% 6:11 ~ &quot;morning&quot;,
+      hour(as.POSIXct(checkin_time, format = &quot;%Y-%m-%d %H:%M:%S&quot;)) %in% 12:17 ~ &quot;afternoon&quot;,
+      TRUE ~ &quot;evening&quot;
+    ),
+    calories_per_min = round(ifelse(workout_duration &gt; 0, calories_burned / workout_duration, 0), 2)
+  ) |&gt;
+  select(user_id, gym_id, workout_year, workout_month, workout_time, workout_timecat, workout_type, workout_duration, calories_burned, calories_per_min)
+
+## 4. plans_data --&gt; plans_tidy
+plans_tidy = plans_data |&gt;
+  select(subscription_plan, price_per_month)
+
+# Merge 4 datasets to get the final dataset
+## 1. users_tidy &amp; history_tidy, by user_id
+users_history_tidy = history_tidy |&gt;
+  left_join(users_tidy |&gt;
+              rename(user_name = name),
+            by = &quot;user_id&quot;)
+
+## 2. users_history_tidy &amp; gyms_tidy, by gym_id
+users_gyms_tidy = users_history_tidy |&gt;
+  left_join(gyms_tidy |&gt;
+              rename(gym_location = location),
+            by = &quot;gym_id&quot;)
+
+## 3. users_gyms_tidy &amp; plans_tidy, by subscription_plan
+final = users_gyms_tidy |&gt;
+  left_join(plans_tidy, by = &quot;subscription_plan&quot;)</code></pre>
+<div id="importing-raw-datasets" class="section level3">
+<h3>Importing Raw Datasets</h3>
+<p>Four raw datasets were imported for analysis:</p>
+<ul>
+<li><p><code>users_data</code>: User demographic and subscription
+information.</p></li>
+<li><p><code>gyms_data</code>: Details about gym locations and available
+facilities.</p></li>
+<li><p><code>history_data</code>: Workout history, including
+check-in/out times and calories burned.</p></li>
+<li><p><code>plans_data</code>: Subscription plans with associated
+pricing.</p></li>
+</ul>
+</div>
+<div id="cleaning-steps" class="section level3">
+<h3>Cleaning Steps</h3>
+<ol style="list-style-type: decimal">
+<li><strong><code>users_data</code></strong>:
+<ul>
+<li><p>Created <code>name</code> by combining first and last
+names.</p></li>
+<li><p>Calculated <code>membership_days</code> from the sign-up date to
+2024-09-30.</p></li>
+<li><p>Retained essential columns: <code>user_id</code>,
+<code>name</code>, <code>age</code>, <code>gender</code>,
+<code>membership_days</code>, <code>user_location</code>, and
+<code>subscription_plan</code>.</p></li>
+</ul></li>
+<li><strong><code>gyms_data</code></strong>:
+<ul>
+<li><p>Converted gym facilities into binary indicators (<span
+class="math inline">\(1 = present,\ 0 = absent\)</span>) for
+<code>climbing_wall</code>, <code>swimming_pool</code>,
+<code>basketball_court</code>, <code>yoga_classes</code>,
+<code>sauna</code>, and <code>crossfit</code>.</p></li>
+<li><p>Retained relevant columns: <code>gym_id</code>,
+<code>location</code>, <code>gym_type</code>, and facility
+indicators.</p></li>
+</ul></li>
+<li><strong><code>history_data</code></strong>:
+<ul>
+<li><p>Extracted year and month as <code>workout_year</code> and
+<code>workout_month</code>.</p></li>
+<li><p>Calculated <code>workout_duration</code> (minutes) from check-in
+and check-out times.</p></li>
+<li><p>Categorized workout times into <code>morning</code>,
+<code>afternoon</code>, and <code>evening</code> periods
+(<code>workout_timecat</code>).</p></li>
+<li><p>Calculated <code>calories_per_min</code> as calories burned
+divided by workout duration.</p></li>
+<li><p>Retained key columns: <code>user_id</code>, <code>gym_id</code>,
+<code>workout_year</code>, <code>workout_month</code>,
+<code>workout_time</code>, <code>workout_timecat</code>,
+<code>workout_type</code>, <code>workout_duration</code>,
+<code>calories_burned</code>, and
+<code>calories_per_min</code>.</p></li>
+</ul></li>
+<li><strong><code>plans_data</code></strong>:
+<ul>
+<li>Retained columns for subscription plans and their prices:
+<code>subscription_plan</code>, <code>price_per_month</code>.</li>
+</ul></li>
+</ol>
+</div>
+<div id="merging-datasets" class="section level3">
+<h3>Merging Datasets</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>Step 1</strong>: Merged <code>users_tidy</code> with
+<code>history_tidy</code> by <code>user_id</code>, renaming
+<code>name</code> to <code>user_name</code>.</p></li>
+<li><p><strong>Step 2</strong>: Merged <code>users_history_tidy</code>
+with <code>gyms_tidy</code> by <code>gym_id</code>, renaming
+<code>location</code> to <code>gym_location</code>.</p></li>
+<li><p><strong>Step 3</strong>: Merged <code>users_gyms_tidy</code> with
+<code>plans_tidy</code> by <code>subscription_plan</code>.</p></li>
+</ol>
+<p>The final dataset, <code>final</code>, contains 25 variables for
+analysis and 300000 observations. Below is the codebook for
+<code>final</code>:</p>
+<table>
+<colgroup>
+<col width="2%" />
+<col width="15%" />
+<col width="82%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">ID</th>
+<th align="left">Variable</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left"><code>user_id</code></td>
+<td align="left">Unique identifier for each user</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><code>gym_id</code></td>
+<td align="left">ID of the gym where the check-in occurred</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>workout_year</code></td>
+<td align="left">Year of check-in time</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left"><code>workout_month</code></td>
+<td align="left">Month of check-in time</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left"><code>workout_time</code></td>
+<td align="left">Exact check-in time</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left"><code>workout_timecat</code></td>
+<td align="left">morning (6:00-11:59); afternoon (12:00-17:59); evening
+(18:00-24:00)</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left"><code>workout_type</code></td>
+<td align="left">Type of workout performed during the visit (e.g.,
+Cardio, Weightlifting, Yoga)</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left"><code>workout_duration</code></td>
+<td align="left">“Check-out time” – “Check-in time” (minute)</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left"><code>calories_burned</code></td>
+<td align="left">Estimated number of calories burned during the
+workout</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left"><code>calories_per_min</code></td>
+<td align="left">Calories burned per minute</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="left"><code>user_name</code></td>
+<td align="left">Users’ full name</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="left"><code>age</code></td>
+<td align="left">Age of the user</td>
+</tr>
+<tr class="odd">
+<td align="left">13</td>
+<td align="left"><code>gender</code></td>
+<td align="left">Male; Female; Non-binary</td>
+</tr>
+<tr class="even">
+<td align="left">14</td>
+<td align="left"><code>membership_days</code></td>
+<td align="left">Total days of membership (from signed-up to
+2024-9-31–when the datasets were last updated by the author)</td>
+</tr>
+<tr class="odd">
+<td align="left">15</td>
+<td align="left"><code>user_location</code></td>
+<td align="left">City where the user lives</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="left"><code>subscription_plan</code></td>
+<td align="left">The user’s gym subscription plan (Basic, Pro,
+Student)</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="left"><code>gym_location</code></td>
+<td align="left">Location of gym</td>
+</tr>
+<tr class="even">
+<td align="left">18</td>
+<td align="left"><code>gym_type</code></td>
+<td align="left">The type of gym (Premium, Standard, Budget)</td>
+</tr>
+<tr class="odd">
+<td align="left">19</td>
+<td align="left"><code>climbing_wall</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="left"><code>swimming_pool</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="odd">
+<td align="left">21</td>
+<td align="left"><code>basketball_court</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="even">
+<td align="left">22</td>
+<td align="left"><code>yoga_classes</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="odd">
+<td align="left">23</td>
+<td align="left"><code>sauna</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="even">
+<td align="left">24</td>
+<td align="left"><code>crossfit</code></td>
+<td align="left">One of the facilities. 1=yes; 0=no</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left"><code>price_per_month</code></td>
+<td align="left">Price per month in Dollar</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

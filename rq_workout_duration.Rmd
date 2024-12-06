@@ -218,6 +218,8 @@ max_duration_by_city |>
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     font_size = 14
   ) |>
+  column_spec(1, width = "250px") |> 
+  column_spec(2, width = "250px") |> 
   row_spec(0, bold = TRUE, color = "white", background = "#F4A261")
 ```
 

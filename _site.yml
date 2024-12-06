@@ -4,7 +4,7 @@ navbar:
   title: "Home"
   left:
     - text: "Data"
-      href: Report.html
+      href: data.html
     - text: "Map"
       href: map.html
     - text: "Analysis"
