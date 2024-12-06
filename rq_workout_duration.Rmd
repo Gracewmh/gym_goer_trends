@@ -1,7 +1,361 @@
+
 ---
 title: "Workout Duration Insights"
 output: 
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide
 ---
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(lubridate)
+library(viridis)
+library(plotly)
+library(kableExtra)
+library(RColorBrewer) # install RColorBrewer
+
+knitr::opts_chunk$set(
+        collapse = TRUE, 
+        message = FALSE, 
+        warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+  )
+
+theme_set(theme_minimal() + 
+            theme(
+              legend.position = "bottom", 
+              panel.background = element_rect(fill = "#FFFFFF", color = NA), 
+              panel.grid.major = element_line(color = "#D6DBDF"),          
+              panel.grid.minor = element_blank(),                          
+              plot.title = element_text(size = 16, color = "#333333", face = "bold"),
+              axis.title = element_text(size = 14, color = "#333333"),     
+              axis.text = element_text(size = 12, color = "#6C757D"),      
+              legend.background = element_rect(fill = "#F5F5F5"),          
+              legend.key = element_rect(fill = "#FFFFFF")                  
+            )
+)
+
+update_geom_defaults("bar", list(fill = "#6C757D"))   
+update_geom_defaults("point", list(colour = "#A3C9A8")) 
+update_geom_defaults("line", list(colour = "#F4A261")) 
+
+
+scale_colour_discrete <- function(...) scale_colour_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+scale_fill_discrete <- function(...) scale_fill_manual(values = c(
+  "#6C757D", "#A3C9A8", "#F4A261", "#E76F51"), ...)
+
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+```
+
+```{r}
+users_data = read_csv("datasets/users_data.csv")
+gyms_data = read_csv("datasets/gym_locations_data.csv")
+history_data = read_csv("datasets/checkin_checkout_history_updated.csv")
+plans_data = read_csv("datasets/subscription_plans.csv")
+
+users_tidy = users_data |>
+  mutate(
+    name = paste(first_name, last_name),
+    membership_days = as.numeric(difftime(as.Date("2024-09-30"), as.Date(sign_up_date, format = "%Y-%m-%d"), units = "days"))
+  ) |>
+  select(user_id, name, age, gender, membership_days, user_location, subscription_plan)
+
+gyms_tidy = gyms_data |>
+  mutate(
+    climbing_wall = ifelse(grepl("Climbing Wall", facilities), 1, 0),
+    swimming_pool = ifelse(grepl("Swimming Pool", facilities), 1, 0),
+    basketball_court = ifelse(grepl("Basketball Court", facilities), 1, 0),
+    yoga_classes = ifelse(grepl("Yoga Classes", facilities), 1, 0),
+    sauna = ifelse(grepl("Sauna", facilities), 1, 0),
+    crossfit = ifelse(grepl("CrossFit", facilities), 1, 0)) |>
+  select(gym_id, location, gym_type, climbing_wall, swimming_pool, basketball_court, yoga_classes, sauna, crossfit)
+
+history_tidy = history_data |>
+  mutate(
+    workout_year = year(as.Date(checkin_time, format = "%Y-%m-%d %H:%M:%S")),
+    workout_month = month(as.Date(checkin_time, format = "%Y-%m-%d %H:%M:%S")),
+    workout_time = format(as.POSIXct(checkin_time, format = "%Y-%m-%d %H:%M:%S"), "%H:%M"),
+    workout_duration = as.numeric(difftime(as.POSIXct(checkout_time, format = "%Y-%m-%d %H:%M:%S"),
+                                         as.POSIXct(checkin_time, format = "%Y-%m-%d %H:%M:%S"),
+                                         units = "mins")),
+    workout_timecat = case_when(
+      hour(as.POSIXct(checkin_time, format = "%Y-%m-%d %H:%M:%S")) %in% 6:11 ~ "morning",
+      hour(as.POSIXct(checkin_time, format = "%Y-%m-%d %H:%M:%S")) %in% 12:17 ~ "afternoon",
+      TRUE ~ "evening"
+    ),
+    calories_per_min = round(ifelse(workout_duration > 0, calories_burned / workout_duration, 0), 2)
+  ) |>
+  select(user_id, gym_id, workout_year, workout_month, workout_time, workout_timecat, workout_type, workout_duration, calories_burned, calories_per_min)
+
+plans_tidy = plans_data |>
+  select(subscription_plan, price_per_month)
+
+users_history_tidy = history_tidy |>
+  left_join(users_tidy |>
+              rename(user_name = name),
+            by = "user_id")
+users_gyms_tidy = users_history_tidy |>
+  left_join(gyms_tidy |>
+              rename(gym_location = location),
+            by = "gym_id")
+final = users_gyms_tidy |>
+  left_join(plans_tidy, by = "subscription_plan")
+```
+
+<img src="images/duration.jpg" alt="Subscription Preferences" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
+## Brief intro
+This analysis explores workout patterns among 300,000 gym members across U.S. cities, examining both check-in timing and duration behaviors. By analyzing temporal distributions, location differences, demographic factors, and membership characteristics, we investigate how gym usage varies throughout the day (6:00-20:59) and across different cities, revealing distinct patterns in both visit timing and workout duration preferences.
+
+## EDA
+### Temporal Analysis of Gym Check-in Patterns Across Different Locations
+```{r}
+hourly_checkins_by_location <- final |> 
+  mutate(hour = as.numeric(substr(workout_time, 1, 2))) |> 
+  group_by(gym_location, hour) |> 
+  summarize(
+    check_in_count = n(),
+    percentage = n() / nrow(final) * 100
+  ) |> 
+  filter(hour >= 6 & hour <= 20) |> 
+  arrange(gym_location, hour)
+
+n_locations <- length(unique(hourly_checkins_by_location$gym_location))
+
+hourly_checkins_location <- ggplot(hourly_checkins_by_location, 
+       aes(x = hour, 
+           y = check_in_count, 
+           color = gym_location,
+           group = gym_location)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Hourly Gym Check-ins Distribution by Location",
+    x = "Hour of Day",
+    y = "Number of Check-ins",
+    color = "Location"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(
+    breaks = 6:20,
+    labels = function(x) sprintf("%02d:00", x)
+  ) + 
+  scale_color_manual(values = c(
+    "#709FB0", "#C1D7B7", "#FFCB77", "#D1495B",
+    "#8D5A97", "#00A6A6", "#6C757D", "#A3C9A8",
+    "#F4A261", "#E76F51"
+  ))
+
+ggplotly(hourly_checkins_location)
+```
+
+<p style="text-align:center; font-size:15px; font-style:italic; color:gray;">
+  Please click location to explore in detail.
+<P>
+
+- The check-in patterns reveal distinct peak hours across different gym locations. The most prominent peak occurs at 14:00 (2 PM), where most locations experience their highest check-in volumes. Notably, Phoenix and San Antonio exhibit strong morning peaks at 09:00 (9 AM), while each city demonstrates unique peak patterns that likely reflect local lifestyle preferences and working schedules.
+- Throughout the day, check-in patterns follow a distinguishable rhythm. Early morning hours (6:00-8:00) maintain moderate but consistent activity across all locations, followed by variable patterns during mid-morning (9:00-11:00) with some locations showing distinct peaks. The lunch hours (12:00-14:00) generally see high activity levels, reaching their zenith at 14:00, before transitioning to a slight decline but maintained activity in the afternoon (15:00-17:00). The evening period (18:00-20:00) shows varied patterns across locations, suggesting different after-work workout preferences in each city.
+- Looking at location-specific trends, several cities stand out with unique patterns. San Diego exhibits the most dramatic fluctuations in check-in numbers, with a particularly notable drop at 13:00. Phoenix demonstrates high variability throughout the operating hours, indicating less predictable usage patterns. Dallas shows particularly strong performance during mid-day hours, suggesting a robust lunch-time workout culture in this location.
+
+### Relationship between Age and Workout Duration
+```{r}
+Age = ggplot(final, aes(x = age)) +
+  geom_histogram(
+    binwidth = 5
+  ) +
+  labs(
+    title = "Distribution of Age",
+    x = "Age",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(20, 70, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 35000, by = 10000))
+ggplotly (Age)
+```
+
+The age distribution histogram reveals that gym membership is fairly consistent across ages 20-60, with the highest concentration around age 40-45 (~35,000 members). There is a notable decrease in membership after age 60, dropping to about 13,000 members in the 65-70 age group.
+
+### Relationship between Gender and Workout_duration
+```{r}
+Gender = ggplot(final, aes(x = workout_duration, fill = gender)) +
+  geom_histogram(binwidth = 10) +
+  facet_wrap(~gender) +
+  labs(title = "Workout Duration by Gender", x = "Workout Duration (minutes)", y = "Count") +
+  theme_minimal()
+ggplotly(Gender)
+```
+
+Male members show the highest participation (~7,500-8,000 per duration interval), followed by female members (~7,000-7,500), and non-binary members (~2,000). Interestingly, all gender groups display similar workout duration patterns, typically exercising between 30-180 minutes, with consistent numbers in the 60-150 minute range. The similar distribution shapes suggest that workout duration preferences are relatively consistent across genders, with the main difference being in participation numbers rather than duration patterns.
+
+### Relationship between Gym_type (Premium/Standard/Budget) and Workout Duration
+```{r}
+detailed_stats <- final |> 
+  group_by(gym_type) |> 
+  summarise(
+    mean_duration = mean(workout_duration, na.rm = TRUE),
+    median_duration = median(workout_duration, na.rm = TRUE),
+    sd_duration = sd(workout_duration, na.rm = TRUE),
+    n_users = n()
+  )
+
+gym_type <- ggplot(final, aes(x = workout_duration, fill = gym_type)) +
+  geom_density(alpha = 0.7) +
+  geom_vline(data = detailed_stats, 
+             aes(xintercept = mean_duration, color = gym_type),
+             linetype = "dashed", size = 1) +
+  facet_wrap(~gym_type) +
+  scale_fill_manual(values = c("#6C757D",  "#A3C9A8", "#F4A261")) +
+  scale_color_manual(values = c("#6C757D",  "#A3C9A8", "#F4A261")) +
+  labs(
+    title = "Workout Duration Distribution by Gym Type",
+    subtitle = "Dashed lines indicate mean duration",
+    x = "Workout Duration (minutes)",
+    y = "Density"
+  )
+ggplotly(gym_type)
+```
+
+All three types show similar shaped distributions with no significant skewness, indicating stable exercise habits among all gym members. The only subtle difference is that Premium members tend to maintain slightly longer workout sessions.
+
+### Relationship between Check_In Frequency and Workout Duration
+```{r}
+user_summary <- final |> 
+  group_by(user_id) |> 
+  summarize(
+    total_check_ins = n(),
+    avg_workout_duration = mean(workout_duration, na.rm = TRUE)
+  )
+
+Check_in <-ggplot(user_summary, aes(x = total_check_ins, y = avg_workout_duration)) +
+  geom_point(alpha = 0.5, color = "#E76F51") +
+  geom_smooth(method = "lm", color = "#6C757D") +
+  labs(
+    title = "Relationship Between Check-In Frequency and Workout Duration",
+    x = "Total Check-Ins",
+    y = "Average Workout Duration (minutes)"
+  ) +
+  theme_minimal()
+
+ggplotly(Check_in)
+```
+
+The scatter plot shows no clear relationship between total check-ins and average workout duration, as indicated by the flat trend line. Most users maintain consistent workout durations, clustering around 90–120 minutes, regardless of how often they check in.
+
+### The Gender with the Highest Workout Duration for Each City
+```{r}
+max_duration_by_city <- final |> 
+  group_by(gym_location) |>   
+  slice_max(order_by = workout_duration, n = 1, with_ties = FALSE) |>   
+  select(gym_location, gender)  
+
+max_duration_by_city
+max_duration_by_city |> 
+  kable(
+    caption = "Gender with the Highest Workout Duration in Each City"
+  )|>
+    kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    font_size = 14
+  ) |>
+  column_spec(1, width = "250px") |> 
+  column_spec(2, width = "250px") |> 
+  row_spec(0, bold = TRUE, color = "white", background = "#F4A261")
+```
+
+The table highlights the gender associated with the highest workout duration across different cities. Female users dominate, achieving the longest durations in cities like Chicago, Houston, and San Antonio. Male users recorded the highest durations in Dallas, Los Angeles, and New York, while non-binary users had the longest durations in Philadelphia and San Diego.
+
+## Statistical Analysis
+
+### Key Factors Influencing Workout Duration: A Regression Analysis
+```{r}
+final_2 <- final |> 
+  mutate(
+    gender = as.factor(gender),
+    user_location = as.factor(user_location),
+    gym_location = as.factor(gym_location),
+    subscription_plan = as.factor(subscription_plan),
+    gym_type = as.factor(gym_type),
+    climbing_wall = as.factor(climbing_wall),
+    swimming_pool = as.factor(swimming_pool),
+    basketball_court = as.factor(basketball_court),
+    yoga_classes = as.factor(yoga_classes),
+    sauna = as.factor(sauna),
+    crossfit = as.factor(crossfit)
+  )
+
+model <- lm(workout_duration ~ 
+            gender + 
+            age + 
+            user_location + 
+            gym_location + 
+            subscription_plan + 
+            membership_days +
+            gym_type + 
+            climbing_wall + 
+            swimming_pool + 
+            basketball_court + 
+            yoga_classes + 
+            sauna + 
+            crossfit,
+            data = final)
+
+model_coef <- coef(summary(model))
+results_df <- data.frame(
+    Estimate = model_coef[,1],
+    Std.Error = model_coef[,2],
+    t.value = model_coef[,3],
+    p.value = model_coef[,4],
+    row.names = rownames(model_coef)
+)
+
+kable(results_df,
+      digits = 3, 
+      caption = "Linear Regression Results",
+      row.names = TRUE) |>
+    kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    font_size = 14
+  ) |>
+  row_spec(0, bold = TRUE, color = "white", background = "#F4A261")
+```
+
+- Non-binary users work out significantly longer than females (coef = 0.622, p = 0.026), while no significant difference was found between males and females.
+- Among user locations, Denver residents show significantly longer workout durations (coef = 0.778, p = 0.025).
+- Gyms in Los Angeles (coef = 0.769, p = 0.029) and San Antonio (coef = 0.756, p = 0.032) demonstrate significantly longer workout durations.
+- Membership duration has a small but significant positive effect on workout duration (coef = 0.001, p = 0.036).
+- Age and subscription plan types show no significant impact on workout duration.
+
+## Conclusion
+Based on our analysis of workout duration patterns in gym members across different cities and demographics, several key insights emerge. The age distribution shows consistent gym membership across ages 20-60, with a notable decline after 60. While gender analysis reveals similar workout duration patterns across all groups, non-binary users demonstrate significantly longer workout sessions than other groups. The gym type (Premium/Standard/Budget) shows minimal impact on workout duration, though Premium members tend to maintain slightly longer sessions. Interestingly, location plays a crucial role, with cities like Denver, Los Angeles, and San Antonio showing significantly longer workout durations. The check-in frequency analysis indicates that members maintain consistent workout durations regardless of visit frequency, suggesting stable exercise habits once established. These findings could be valuable for gym management in optimizing facility operations and developing targeted member engagement strategies.
+The data suggests that while demographic factors influence workout patterns, the most significant determinants of workout duration are location-based and membership tenure rather than individual characteristics like age or subscription type. This could inform future decisions about gym locations and membership retention strategies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
