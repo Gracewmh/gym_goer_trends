@@ -119,6 +119,55 @@ final = users_gyms_tidy |>
 This analysis explores workout duration patterns among 300,000 gym members across U.S. cities. By examining demographic factors, location differences, and membership characteristics, we aim to identify key determinants of workout duration to provide insights for gym management and operational strategies.
 
 ## EDA
+### Temporal Analysis of Gym Check-in Patterns Across Different Locations
+```{r}
+hourly_checkins_by_location <- final |> 
+  mutate(hour = as.numeric(substr(workout_time, 1, 2))) |> 
+  group_by(gym_location, hour) |> 
+  summarize(
+    check_in_count = n(),
+    percentage = n() / nrow(final) * 100
+  ) |> 
+  filter(hour >= 6 & hour <= 20) |> 
+  arrange(gym_location, hour)
+
+n_locations <- length(unique(hourly_checkins_by_location$gym_location))
+
+hourly_checkins_location <- ggplot(hourly_checkins_by_location, 
+       aes(x = hour, 
+           y = check_in_count, 
+           color = gym_location,
+           group = gym_location)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Hourly Gym Check-ins Distribution by Location",
+    x = "Hour of Day",
+    y = "Number of Check-ins",
+    color = "Location"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(
+    breaks = 6:20,
+    labels = function(x) sprintf("%02d:00", x)
+  ) + 
+  scale_color_manual(values = c(
+    "#709FB0", "#C1D7B7", "#FFCB77", "#D1495B",
+    "#8D5A97", "#00A6A6", "#6C757D", "#A3C9A8",
+    "#F4A261", "#E76F51"
+  ))
+
+ggplotly(hourly_checkins_location)
+```
+
+<p style="text-align:center; font-size:15px; font-style:italic; color:gray;">
+  Please click location to explore in detail.
+<P>
+
+- The check-in patterns reveal distinct peak hours across different gym locations. The most prominent peak occurs at 14:00 (2 PM), where most locations experience their highest check-in volumes. Notably, Phoenix and San Antonio exhibit strong morning peaks at 09:00 (9 AM), while each city demonstrates unique peak patterns that likely reflect local lifestyle preferences and working schedules.
+- Throughout the day, check-in patterns follow a distinguishable rhythm. Early morning hours (6:00-8:00) maintain moderate but consistent activity across all locations, followed by variable patterns during mid-morning (9:00-11:00) with some locations showing distinct peaks. The lunch hours (12:00-14:00) generally see high activity levels, reaching their zenith at 14:00, before transitioning to a slight decline but maintained activity in the afternoon (15:00-17:00). The evening period (18:00-20:00) shows varied patterns across locations, suggesting different after-work workout preferences in each city.
+- Looking at location-specific trends, several cities stand out with unique patterns. San Diego exhibits the most dramatic fluctuations in check-in numbers, with a particularly notable drop at 13:00. Phoenix demonstrates high variability throughout the operating hours, indicating less predictable usage patterns. Dallas shows particularly strong performance during mid-day hours, suggesting a robust lunch-time workout culture in this location.
+
 ### Relationship between Age and Workout Duration
 ```{r}
 Age = ggplot(final, aes(x = age)) +
@@ -291,5 +340,5 @@ kable(results_df,
 - Age and subscription plan types show no significant impact on workout duration.
 
 ## Conclusion
-Based on our analysis of workout duration patterns in gym members across different cities and demographics, several key insights emerge. The age distribution shows consistent gym membership across ages 20-60, with a notable decline after 60. While gender analysis reveals similar workout duration patterns across all groups, non-binary users demonstrate significantly longer workout sessions than other groups. The gym type (Premium/Standard/Budget) shows minimal impact on workout duration, though Premium members tend to maintain slightly longer sessions. Interestingly, location plays a crucial role, with cities like Denver, Los Angeles, and San Antonio showing significantly longer workout durations. The check-in frequency analysis indicates that members maintain consistent workout durations regardless of visit frequency, suggesting stable exercise habits once established. These findings could be valuable for gym management in optimizing facility operations and developing targeted member engagement strategies.
+Based on our analysis of workout duration patterns in gym members across different cities and demographics, several key Based on our analysis of workout duration patterns in gym members across different cities and demographics, several key insights emerge. The age distribution shows consistent gym membership across ages 20-60, with a notable decline after 60. While gender analysis reveals similar workout duration patterns across all groups, non-binary users demonstrate significantly longer workout sessions than other groups. The gym type (Premium/Standard/Budget) shows minimal impact on workout duration, though Premium members tend to maintain slightly longer sessions. Interestingly, location plays a crucial role, with cities like Denver, Los Angeles, and San Antonio showing significantly longer workout durations. The check-in frequency analysis indicates that members maintain consistent workout durations regardless of visit frequency, suggesting stable exercise habits once established. These findings could be valuable for gym management in optimizing facility operations and developing targeted member engagement strategies.
 The data suggests that while demographic factors influence workout patterns, the most significant determinants of workout duration are location-based and membership tenure rather than individual characteristics like age or subscription type. This could inform future decisions about gym locations and membership retention strategies.

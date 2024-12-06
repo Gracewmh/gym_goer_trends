@@ -309,6 +309,53 @@ plot2
 
 This histogram shows the distribution of calories burned per minute across different workout types. Most activities cluster around lower calorie burn rates (below 15 calories per minute), with a sharp decline in frequency as the rate increases. The overlap in distributions suggests similarities in calorie burn patterns across workout types, though some types like Yoga and Weightlifting dominate the lower range.
 
+### Temporal Analysis of Gym Check-in Patterns Across Different Locations
+```{r}
+hourly_checkins_by_location <- final |> 
+  mutate(hour = as.numeric(substr(workout_time, 1, 2))) |> 
+  group_by(gym_location, hour) |> 
+  summarize(
+    check_in_count = n(),
+    percentage = n() / nrow(final) * 100
+  ) |> 
+  filter(hour >= 6 & hour <= 20) |> 
+  arrange(gym_location, hour)
+
+n_locations <- length(unique(hourly_checkins_by_location$gym_location))
+
+hourly_checkins_location <- ggplot(hourly_checkins_by_location, 
+       aes(x = hour, 
+           y = check_in_count, 
+           color = gym_location,
+           group = gym_location)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Hourly Gym Check-ins Distribution by Location",
+    x = "Hour of Day",
+    y = "Number of Check-ins",
+    color = "Location"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(
+    breaks = 6:20,
+    labels = function(x) sprintf("%02d:00", x)
+  ) + 
+  scale_color_manual(values = c(
+    "#709FB0", "#C1D7B7", "#FFCB77", "#D1495B",
+    "#8D5A97", "#00A6A6", "#6C757D", "#A3C9A8",
+    "#F4A261", "#E76F51"
+  ))
+
+ggplotly(hourly_checkins_location)
+```
+
+<p style="text-align:center; font-size:15px; font-style:italic; color:gray;">
+  Please click location to explore in detail.
+<P>
+
+Analysis of check-in data reveals distinct hourly patterns across gym locations, with the primary peak occurring at 14:00 (2 PM), while Phoenix and San Antonio notably show strong morning peaks at 09:00 (9 AM). Daily activity follows a consistent rhythm: moderate early morning activity (6:00-8:00), varied mid-morning patterns (9:00-11:00), peak activity during lunch hours (12:00-14:00), and diverse evening patterns (18:00-20:00) across locations. Each location demonstrates unique characteristics, with San Diego showing the most dramatic fluctuations including a notable drop at 13:00, Phoenix displaying highly variable check-in patterns throughout the day, and Dallas exhibiting particularly strong midday attendance, suggesting an active lunch-break workout culture.
+
 ### Age and Workout Duration
 ```{r}
 Age = ggplot(final, aes(x = age)) +
@@ -936,6 +983,8 @@ We also found that gym type plays a critical role in determining how frequently 
 - Swimming, weightlifting, and yoga are associated with higher calorie burn efficiency per minute, and shorter, high-intensity workouts are more efficient.
 
 - Non-binary users and individuals in Miami show higher calorie burn rates, indicating both personal and geographic influences.
+
+- Gym check-in patterns exhibit distinct temporal trends across locations, featuring a common peak at 14:00, varied morning activity, and unique local patterns that reflect different urban workout preferences.
 
 - Non-binary users demonstrate significantly longer workout durations compared to other groups.
 
