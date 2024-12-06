@@ -16,7 +16,7 @@ library(lubridate)
 library(viridis)
 library(plotly)
 library(kableExtra)
-library(RColorBrewer) # install RColorBrewer
+library(RColorBrewer) # install RColorBrewer!
 
 knitr::opts_chunk$set(
         collapse = TRUE, 
