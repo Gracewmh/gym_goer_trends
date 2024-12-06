@@ -242,4 +242,4 @@ model_summary |>
 
 - Demographic factors, such as gender identity, and geographic location, such as Miami, also play a role in influencing calorie-burning outcomes.
 
-- These findings underscor
+- These findings underscore the importance of tailoring exercise programs to individual characteristics and environmental factors to optimize workout efficiency.

@@ -262,4 +262,13 @@ frequency_fit |>
 
 The results of the linear regression model suggest that gym type significantly influences the frequency of gym visits ($p < 0.05$). 
 
-On average, gym-goers visited the budget gyms `r frequency_fit$Estimate[1] |> round(0)` times, premium 
+On average, gym-goers visited the budget gyms `r frequency_fit$Estimate[1] |> round(0)` times, premium gyms `r frequency_fit$Estimate[1] |> round(0) + frequency_fit$Estimate[2] |> round(0)` times, and standard gyms `r frequency_fit$Estimate[1] |> round(0) + frequency_fit$Estimate[3] |> round(0)` times in 2023.
+
+## Conclusion
+
+- We do not observe any difference in users' subscription plans by their gender, age, average duration of workouts and average calories burned. 
+
+- Las Vegas has a statistically significant impact on subscription plan.
+
+- Gym type plays a crucial role in determining how often users visit the gym.
+
