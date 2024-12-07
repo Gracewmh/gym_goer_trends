@@ -14,7 +14,8 @@
     <li>What factors influence members' selection among the Basic, Pro, and Student subscription plans?</li>
   </ul>
 
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/vNYQC4V8GG4" frameborder="0" border="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe src="https://player.vimeo.com/video/1036964569" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
 </div>
 
 ```{css, echo=FALSE}
